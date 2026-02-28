@@ -17,7 +17,7 @@ def get_config_value(key: str) -> str:
     return value
 
 def main() -> None:
-    print("ORACLE STATUS: Reading the Matrix...\n")
+    print("\nORACLE STATUS: Reading the Matrix...\n")
 
     # Load variables from .env file into environment
     load_dotenv("./.env.example")
