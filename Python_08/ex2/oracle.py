@@ -2,54 +2,60 @@ import os
 import sys
 from dotenv import load_dotenv
 
-load_dotenv()
-
-DEFAULTS = {
-    "MATRIX_MODE":    "development",
-    "DATABASE_URL":   None,
-    "API_KEY":        None,
-    "LOG_LEVEL":      "DEBUG",
-    "ZION_ENDPOINT":  None,
-}
 
 
-def get_config():
-    missing = []
-    config = {}
-    for key, default in DEFAULTS.items():
-        value = os.getenv(key, default)
-        if value is None:
-            missing.append(key)
-        config[key] = value
-    return config, missing
 
+def get_config_value(key: str) -> str:
+    # Get value from environment variables
+    value = os.getenv(key)
 
-def main():
-    print("ORACLE STATUS:")
-    print("Reading the Matrix...\n")
-
-    config, missing = get_config()
-
-    if missing:
-        print("WARNING: Missing required configuration:")
-        for key in missing:
-            print(f"  [MISSING] {key}")
-        print("\nCopy .env.example to .env and fill in the values.")
-        print("  cp .env.example .env")
+    # If missing, show error and stop program
+    if not value:
+        print(f"[ERROR] Missing required configuration: {key}")
         sys.exit(1)
 
-    mode = config["MATRIX_MODE"]
-    print("Configuration loaded:")
-    print(f"  Mode:         {mode}")
-    print(f"  Database:     {'Connected to local instance' if 'localhost' in config['DATABASE_URL'] else 'Connected to remote instance'}")
-    print(f"  API Access:   {'Authenticated' if config['API_KEY'] else 'No key'}")
-    print(f"  Log Level:    {config['LOG_LEVEL']}")
-    print(f"  Zion Network: {'Online' if config['ZION_ENDPOINT'] else 'Offline'}")
+    return value
 
-    print("\nEnvironment security check:")
-    print("  [OK] No hardcoded secrets detected")
-    print(f"  [OK] .env file {'properly configured' if os.path.exists('.env') else 'not found (using env vars)'}")
-    print(f"  [OK] Production overrides {'active' if mode == 'production' else 'available'}")
+def main() -> None:
+    print("ORACLE STATUS: Reading the Matrix...\n")
+
+    # Load variables from .env file into environment
+    load_dotenv("./.env.example")
+
+    # Read configuration values
+    matrix_mode = get_config_value("MATRIX_MODE")
+    database_url = get_config_value("DATABASE_URL")
+    api_key = get_config_value("API_KEY")
+    log_level = get_config_value("LOG_LEVEL")
+    zion_endpoint = get_config_value("ZION_ENDPOINT")
+
+    print("Configuration loaded:")
+
+    print(f"Mode: {matrix_mode}")
+
+    if database_url == "Connection string for data storage":
+        print("Database: Connected to local instance")
+    else:
+        print("Database: NOt Connected")
+
+    if api_key == "Secret key for external services":
+        print("API Access: Authenticated")
+    else:
+        print("API Access: Not Authenticated")
+    if log_level == "Logging verbosity":
+        print(f"Log Level: DEBUG")
+    else:
+        print(f"Log Level: Not DEBUG")
+
+    if zion_endpoint == "URL for the resistance network":
+        print("Zion Network: Online\n")
+    else:
+        print("Zion Network: Offline\n")
+
+    print("Environment security check:")
+    print("[OK] No hardcoded secrets detected")
+    print("[OK] .env file properly configured")
+    print("[OK] Production overrides available")
 
     print("\nThe Oracle sees all configurations.")
 
