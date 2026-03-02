@@ -1,4 +1,3 @@
-import sys
 import importlib
 
 
@@ -69,7 +68,7 @@ def main() -> None:
         print("Install using:")
         print("pip install -r requirements.txt")
         print("or")
-        print("poetry install")
+        print("poetry install (if poetry is available)")
         return
 
     analyze_data()

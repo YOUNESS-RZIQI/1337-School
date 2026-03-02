@@ -14,7 +14,7 @@ def get_venv_name() -> str:
 
     # Return the virtual environment name.
 
-    venv_path = os.environ.get("VIRTUAL_ENV")
+    venv_path = os.getenv("VIRTUAL_ENV")
     if venv_path:
         return os.path.basename(venv_path)
     return "Unknown"
