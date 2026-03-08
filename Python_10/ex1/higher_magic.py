@@ -1,17 +1,17 @@
 def spell_combiner(spell1: callable, spell2: callable) -> callable:
-    def combined(*args, **kwargs):
+    def combined(*args: any, **kwargs: any) -> tuple:
         return (spell1(*args, **kwargs), spell2(*args, **kwargs))
     return combined
 
 
 def power_amplifier(base_spell: callable, multiplier: int) -> callable:
-    def amplified(*args, **kwargs):
+    def amplified(*args: any, **kwargs: any) -> int | float:
         return base_spell(*args, **kwargs) * multiplier
     return amplified
 
 
 def conditional_caster(condition: callable, spell: callable) -> callable:
-    def caster(*args, **kwargs):
+    def caster(*args: any, **kwargs: any) -> any:
         if condition(*args, **kwargs):
             return spell(*args, **kwargs)
         return "Spell fizzled"
@@ -19,7 +19,7 @@ def conditional_caster(condition: callable, spell: callable) -> callable:
 
 
 def spell_sequence(spells: list[callable]) -> callable:
-    def sequence(*args, **kwargs):
+    def sequence(*args: any, **kwargs: any) -> list:
         return [spell(*args, **kwargs) for spell in spells]
     return sequence
 
