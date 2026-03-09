@@ -33,7 +33,8 @@ def retry_spell(max_attempts: int) -> callable:
                 try:
                     return func(*args, **kwargs)
                 except Exception:
-                    print(f"Spell failed, retrying... (attempt {attempt}/{max_attempts})")
+                    print("Spell failed, retrying... (attempt"
+                          f" {attempt}/{max_attempts})")
             return f"Spell casting failed after {max_attempts} attempts"
         return wrapper
     return decorator

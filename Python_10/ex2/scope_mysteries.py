@@ -1,6 +1,8 @@
-# local -> inclosint -> global -> built in 
+# local -> enclosing -> global -> built in
+from typing import Any, Callable
 
-def mage_counter() -> callable:
+
+def mage_counter() -> Callable:
     count = 0
 
     def counter() -> int:
@@ -11,7 +13,7 @@ def mage_counter() -> callable:
     return counter
 
 
-def spell_accumulator(initial_power: int) -> callable:
+def spell_accumulator(initial_power: int) -> Callable:
     total = initial_power
 
     def accumulate(amount: int) -> int:
@@ -22,26 +24,26 @@ def spell_accumulator(initial_power: int) -> callable:
     return accumulate
 
 
-def enchantment_factory(enchantment_type: str) -> callable:
+def enchantment_factory(enchantment_type: str) -> Callable:
     def enchant(item_name: str) -> str:
         return f"{enchantment_type} {item_name}"
 
     return enchant
 
 
-def memory_vault() -> dict[str, callable]:
+def memory_vault() -> dict[str, Callable]:
     storage = {}
 
-    def store(key: str, value) -> None:
+    def store(key: str, value: Any) -> None:
         storage[key] = value
 
-    def recall(key: str):
+    def recall(key: str) -> Any:
         return storage.get(key, "Memory not found")
 
     return {'store': store, 'recall': recall}
 
 
-if __name__ == "__main__":
+def scope_mysteries() -> None:
     print("Testing mage counter...")
     counter = mage_counter()
     print(f"Call 1: {counter()}")
@@ -53,3 +55,12 @@ if __name__ == "__main__":
     frozen = enchantment_factory("Frozen")
     print(flaming("Sword"))
     print(frozen("Shield"))
+
+
+if __name__ == "__main__":
+    try:
+        scope_mysteries()
+    except TypeError as e:
+        print("Type Error :", e)
+    except Exception as e:
+        print("Error :", e)

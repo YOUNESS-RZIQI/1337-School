@@ -14,8 +14,10 @@ def spell_reducer(spells: list[int], operation: str) -> int:
 
 def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
     return {
-        'fire_enchant': functools.partial(base_enchantment, power=50, element='fire'),
-        'ice_enchant': functools.partial(base_enchantment, power=50, element='ice'),
+        'fire_enchant': functools.partial(base_enchantment, power=50,
+                                          element='fire'),
+        'ice_enchant': functools.partial(base_enchantment, power=50,
+                                         element='ice'),
         'lightning_enchant': functools.partial(
             base_enchantment, power=50, element='lightning'
         ),
@@ -24,6 +26,8 @@ def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
 
 @functools.lru_cache(maxsize=None)
 def memoized_fibonacci(n: int) -> int:
+    if n < 0:
+        raise ValueError("n could not be less then 0")
     if n <= 1:
         return n
     return memoized_fibonacci(n - 1) + memoized_fibonacci(n - 2)
@@ -47,6 +51,7 @@ def spell_dispatcher() -> callable:
         return f"Multi-cast: {len(value)} spells cast"
 
     return dispatch
+
 
 if __name__ == "__main__":
     spells = [10, 20, 30, 40]
