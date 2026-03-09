@@ -1,5 +1,6 @@
 import functools
 import operator
+from typing import Callable, Any
 
 
 def spell_reducer(spells: list[int], operation: str) -> int:
@@ -12,7 +13,7 @@ def spell_reducer(spells: list[int], operation: str) -> int:
     return functools.reduce(ops[operation], spells)
 
 
-def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
+def partial_enchanter(base_enchantment: Callable) -> dict[str, Callable]:
     return {
         'fire_enchant': functools.partial(base_enchantment, power=50,
                                           element='fire'),
@@ -33,27 +34,27 @@ def memoized_fibonacci(n: int) -> int:
     return memoized_fibonacci(n - 1) + memoized_fibonacci(n - 2)
 
 
-def spell_dispatcher() -> callable:
+def spell_dispatcher() -> Callable:
     @functools.singledispatch
-    def dispatch(value):
+    def dispatch(value: Any) -> str:
         return f"Unknown spell type: {type(value)}"
 
     @dispatch.register(int)
-    def _(value: int):
+    def _(value: int) -> str:
         return f"Damage spell: {value} damage dealt"
 
     @dispatch.register(str)
-    def _(value: str):
+    def _(value: str) -> str:
         return f"Enchantment: {value} applied"
 
     @dispatch.register(list)
-    def _(value: list):
+    def _(value: list) -> str:
         return f"Multi-cast: {len(value)} spells cast"
 
     return dispatch
 
 
-if __name__ == "__main__":
+def functools_artifacts() -> None:
     spells = [10, 20, 30, 40]
     print("Testing spell reducer...")
     print(f"Sum: {spell_reducer(spells, 'add')}")
@@ -63,3 +64,12 @@ if __name__ == "__main__":
     print("Testing memoized fibonacci...")
     print(f"Fib(10): {memoized_fibonacci(10)}")
     print(f"Fib(15): {memoized_fibonacci(15)}")
+
+
+if __name__ == "__main__":
+    try:
+        functools_artifacts()
+    except ValueError as e:
+        print("Error:", e)
+    except Exception as e:
+        print("Error:", e)
