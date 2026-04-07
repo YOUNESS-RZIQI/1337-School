@@ -1,0 +1,55 @@
+<!--
+
+
+            ~    Title :   Image as link   ~
+
+
+Image Links:
+Using an <a> tag to link an image to another web page or resource is a common practice in web design. This is done by wrapping the <img> element inside an <a> tag. Here’s a concise explanation of how this is implemented:
+
+When you want to link an image to a different page, you surround the <img> tag with an <a> tag and use the href attribute in the <a> tag to specify the destination URL. This makes the image act as a clickable link, allowing users to navigate to the specified URL when they click on the image.
+
+For example:
+
+<a href="https://www.example.com" target="_blank">
+    <img src="image.jpg" alt="Descriptive Text">
+</a>
+
+In this setup:
+
+The href attribute points to the URL where you want the user to go when they click on the image.
+The target="_blank" attribute is optional but can be used to open the linked page in a new browser tab,
+keeping your site open in the original tab. This is particularly useful for keeping users engaged with your 
+site while also directing them to additional information or external content.
+This method is widely used for various purposes, such as advertising banners, gallery images, or any visual 
+content that you want to link to other parts of your site or to external sites. It enhances the interactivity
+of images and can improve navigation and user experience on your website. 
+
+
+    !  what is inside the tag a that if you click in to it you will do to the src using _self or _blank.  !
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color: rgb(157, 0, 248);">
+    
+    <div style="text-align: center;" >
+
+        <a href="http://ProgrammingAdvices.com" title="click her" target="_blank">
+
+            <img src="/Images/medium-image.jpg" alt="Image" target="_blank"> 
+
+        </a>
+
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+                        
+                        
+                        
+                        ~  How Broswer Render HTML & CSS  ~
+
+
+
+# CRITICAL RENDERING PATH (CRP) - Browser Process
+
+# Phase 1: Parsing and Model Creation
+# ------------------------------------
+HTML --[Parsing]---> DOM (Document Object Model)
+CSS  --[Parsing]---> CSSOM (CSS Object Model)
+
+# Phase 2: Tree Combination
+# -------------------------
+DOM + CSSOM --[Attachment/Style]---> RENDER TREE (only the visible objects tha exist in RENDER TREE)
+
+# Phase 3: Layout and Display
+# ---------------------------
+RENDER TREE --[Calculate Geometry]---> LAYOUT (Reflow)[Draw Pixels]
+LAYOUT (Reflow) --[Draw Pixels]---> PAINTING
+PAINTING --[Layering/Final View]---> COMPOSITING (Screen Display)
+
+
+
+           ----- HTML PARSING --------- DOM TREE _ _ _ _ _ _ _
+         /                          (Transforms HTML)         \
+HTML __ /                         (to structured nodes)        \ _ _ _ _ _ _ _ Render Tree - - - - - - - - - - - - - - -Reflow - - - - - - - - Paint (shows) .
+        \                                                      /      (containd the only visible objects)         (Calculate the size's)             
+         \ _ _ _ CSS PARSING ---------- CSSOM TREE _ _ _ _ _ _/          (of the DOM Tree & CSSOM Tree)                (of the view)
+                                    (Build CSSOM from)                                                   
+                                     (  Stylesheets )                                                    
+
+Step 1 (Parsing to creat DOM Tree):
+
+    * Process : when a browser loads and HTML file , it reads , or "parses" the HTML code to understand the structure and content of the page.
+    * outcome : Then browser convert HTML tags into DOM nodes , creating "DOM Tree".
+
+        DOM (Document Object Model)
+        The DOM for your HTML would be structured as follows after the Parsing the HTML :
+
+        Document
+        │
+        └── DOCTYPE: html
+        │
+        └── html (lang="en")
+            │
+            ├── head
+            │   ├── meta (charset="UTF-8")
+            │   ├── meta (name="viewport", content="width=device-width, initial-scale=1.0")
+            │   ├── title: "This is my page title"
+            │   └── style: [CSS rules]
+            │
+            └── body
+                ├── h1: "Welcome to HTML"
+                ├── p: "This is my [b: 'First'] paragraph."
+                ├── p: "This is my [b: 'Second'] paragraph"
+                └── p: "This is my third [b: 'paragraph']"
+
+
+Step 2 ( Parsing CSS to get CSSOM ) : 
+
+    * in the same time when the parsing of the HTML happens also the Parsing of CSS happes to determine the syling of various HTML elements  and it gave us the CSSOM
+        CSSOM (CSS Object Model)
+        The CSSOM for the provided CSS would look something like this after Parsing the CSS:
+
+        CSSOM Tree
+        │
+        └── style rules
+            │
+            ├── body {font-family: Arial, sans-serif; background-color: #f0f0f0;}
+            ├── h1 {color: blue;}
+            ├── p {color: #333; font-size: 16px;}
+            └── b {color: red;}
+
+    
+Step 3 (Constucting the Render Tree) :
+
+    * The browser combines the DOM & CSSOM to form the Render Tree which represent the visual layout of the webpage (only the visible).
+
+        Render Tree
+        The render tree combines the DOM and CSSOM, including only the nodes that need to be rendered:
+
+        Render Tree
+        │
+        └── body (font-family: Arial, sans-serif; background-color: #f0f0f0)
+            │
+            ├── h1 (color: blue): "Welcome to HTML"
+            ├── p (color: #333; font-size: 16px): "This is my [b (color: red): 'First'] paragraph."
+            ├── p (color: #333; font-size: 16px): "This is my [b (color: red): 'Second'] paragraph"
+            └── p (color: #333; font-size: 16px): "This is my third [b (color: red): 'paragraph']"
+
+
+Step 4 ( Layout Process (reflow) ) : 
+
+    * The browser claculates the exact position and size of each object on the page , a process known as "layout" or "reflow".
+Step 5 ( Painting ) : 
+
+    * The final step is painting , where the render tree is converted into actual pixels on the screen.
+
+This her shows how the 
+
+
+
+
+
+
+
+
+
+
+

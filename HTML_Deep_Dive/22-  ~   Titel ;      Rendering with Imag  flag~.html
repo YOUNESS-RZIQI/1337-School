@@ -1,0 +1,37 @@
+Detailed Process Breakdown
+
+1- Parsing HTML:
+
+• As the browser parses the HTML document, it constructs the DOM (Document Object Model).
+
+• During this parsing, whenever it encounters an  tag, it recognizes a resource that
+
+needs to be fetched. The parsing continues while these resources are being noted for
+
+fetching.
+
+2- Sending Request:
+
+• As soon as the browser encounters an  tag with a src attribute during the HTML
+
+parsing, it sends an HTTP request for the image, even if it hasn't finished parsing the
+
+entire document.
+
+• This is typically done asynchronously, meaning that the browser doesn’t need to wait for
+
+the image to be downloaded to continue processing the HTML.
+
+3- Downloading Image:
+
+• Image files are downloaded in the background, allowing the browser to continue with other
+
+tasks such as parsing the rest of the HTML, loading CSS and JavaScript, and rendering
+
+content that has already been processed.
+
+• The downloading process does not block the browser from performing these other tasks
+
+unless specifically instructed to do so (e.g., by scripts that wait for an event related
+
+to the image).
