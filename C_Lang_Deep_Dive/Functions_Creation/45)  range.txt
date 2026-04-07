@@ -1,0 +1,55 @@
+Exercise: range  
+
+Description:  
+Write a function that returns an array of integers containing all values from `min` (included) to `max` (excluded).  
+If `min >= max`, the function should return `NULL`.  
+Memory for the array should be allocated using `malloc`.  
+
+Prototype:  
+int *range(int min, int max);
+
+💡 Solution
+#include <stdlib.h>
+
+int	*range(int min, int max)
+{
+	int	size;
+	int	i;
+	int	*p;
+
+	if (min >= max)
+		return (NULL);
+	size = max - min;
+	p = malloc(size * sizeof(int));
+	if (!p)
+		return (NULL);
+	i = 0;
+	while (i < size)
+	{
+		p[i] = min + i;
+		i++;
+	}
+	return (p);
+}
+
+#include <stdio.h>
+
+int	main(void)
+{
+	int	min = 3;
+	int	max = 10;
+	int	*arr = range(min, max);
+	int	i;
+
+	if (arr)
+	{
+		printf("Range from %d to %d:\n", min, max);
+		for (i = 0; i < max - min; i++)
+			printf("%d ", arr[i]);
+		printf("\n");
+		free(arr);
+	}
+	else
+		printf("Invalid range or memory allocation failed.\n");
+	return (0);
+}
