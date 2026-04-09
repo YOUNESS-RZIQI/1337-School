@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <string.h>
 
+
 typedef struct s_args
 {
     long long number_of_coders;
@@ -17,10 +18,34 @@ typedef struct s_args
     char *scheduler;
 } t_args;
 
+typedef enum e_coder_state
+{
+    COMPILING,
+    DEBUGGING,
+    REFACTORING,
+    WATING
 
-short           is_full_digit(char *s);
-long long       ft_atoi(const char *s);
-t_args          convert_args(int argc, char **argv);
-short           is_empty_args(t_args args);
+} t_coder_state;
+
+typedef struct s_coder
+{
+
+    long long coder_number;
+    long long left;  
+    long long right;
+    short has_one_usb;  
+    short has_two_usb;
+    t_coder_state status;
+
+} t_coder;
+
+// short           is_full_digit(char *s);
+// long long       ft_atoi(const char *s);
+// t_args          convert_args(int argc, char **argv);
+// short           is_empty_args(t_args args);
+
+#include "utils_zero.h"
+#include "pars_args.h"
+
 
 #endif
