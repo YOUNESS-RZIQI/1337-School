@@ -73,12 +73,23 @@ t_args args_converted(char **argv)
 
 t_args convert_args(int argc, char **argv)
 {
+    /* 
+    Get empty args : 
+            * <= 1 coder.
+            * num args != 9
+            * if ++ or --
+            * more then long long.
+            * negative number.
+            * not "fifo" or "edf".
+            * 
+    */
     t_args args;
-
     args = empty_args();
 
     if (argc == 9)
         args = args_converted(argv);
+    if (args.number_of_coders <= 1)
+        args = empty_args();
 
     return (args);
 }
