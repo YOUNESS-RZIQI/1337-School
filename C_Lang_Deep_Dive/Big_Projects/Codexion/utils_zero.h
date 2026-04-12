@@ -6,7 +6,7 @@
 /*   By: yrziqi <yrziqi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 10:34:42 by yrziqi            #+#    #+#             */
-/*   Updated: 2026/04/09 10:36:31 by yrziqi           ###   ########.fr       */
+/*   Updated: 2026/04/11 08:22:08 by yrziqi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ static short	ft_isdigit(char c)
 
 static long long	conversion(const char *s, short sign)
 {
-	long long	_atoi;
-	long long	befor;
+	int	_atoi;
+	int	befor;
 
 	_atoi = 0;
 	while (ft_isdigit((unsigned char)*s))
@@ -80,4 +80,5 @@ long long	ft_atoi(const char *s)
 	}
 	return (conversion(s, sign));
 }
+
 #endif
