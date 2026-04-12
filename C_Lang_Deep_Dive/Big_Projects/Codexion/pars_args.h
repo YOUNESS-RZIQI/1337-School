@@ -78,9 +78,10 @@ t_args convert_args(int argc, char **argv)
     Get empty args : 
             * <= 1 coder.
             * num args != 9
+            * < 0
             * if ++ or --
+            * if " 6  a" or " a  5 "
             * more then long long.
-            * negative number.
             * not "fifo" or "edf".
     */
 
