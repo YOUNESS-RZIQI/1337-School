@@ -30,37 +30,37 @@ typedef enum e_coder_state
 
 } t_coder_state;
 
-typedef struct s_dongle
-{
-    short               is_available;
-    struct s_dongle     *left_dongle;
-    struct s_dongle     *right_dongle;
-
-} t_dongle;
-
 typedef struct s_order_list
 {
     int                 order;
     struct s_order_list *next;
 } t_order_list;
 
+typedef struct s_dongle
+{
+    t_order_list        *order_list;
+    short               is_available;
+    struct s_dongle     *left_dongle;
+    struct s_dongle     *right_dongle;
+
+} t_dongle;
+
 typedef struct s_coder
 {
+    struct s_coder  *next;
     int             coder_number;
-    long long       last_compile_time;  // Last time compilation started
-    long long       deadline;           // Burnout deadline (last_compile_start + time_to_burnout)
-    long long       creation_time;      // Time when coder thread was created
-    t_dongle        dongle;  
+    long long       last_compile_time;
+    long long       deadline;
+    long long       creation_time;
+    long long       time_to_burnout;
     t_coder_state   status;
-    short           is_usb_avilable;
 
 } t_coder;
 
 typedef struct s_simulation
 {
-    t_args          *data;
-    t_coder         coder;
-    t_order_list    *order_list;
+    t_args          args;
+    t_coder         *coders;
     pthread_mutex_t *mutex_lock;
     
 } t_simulation;
