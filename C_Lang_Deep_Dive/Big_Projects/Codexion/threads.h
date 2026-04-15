@@ -90,7 +90,7 @@ void    add_coder_to_list(t_coder *coder, t_simulation *sim)
     }
 }
 
-void    complit_creat_dongle(int    number, t_dongle   *dongle, t_simulation   *sim)
+void    creat_dongle_2(int    number, t_dongle   *dongle, t_simulation   *sim)
 {
     if (number == sim->args.number_of_coders)
     {
@@ -121,7 +121,7 @@ t_dongle *create_dongle(int number, t_simulation *sim)
     dongle->how_much_to_rest = sim->args.dongle_cooldown;
     dongle->toked_at = 0;
     dongle->toked_by = 0;
-    complit_creat_dongle(number, dongle, sim);
+    creat_dongle_2(number, dongle, sim);
     dongle->next = NULL;
     return dongle;
 }
@@ -152,7 +152,6 @@ void    creat_dongels_list(t_simulation *sim)
     while (i++ < num_dongles)
     {
         dongle = create_dongle(i, sim);
-
         if (!dongle)
             return (free_dongles_list(sim->dongles));
         if (!sim->dongles)

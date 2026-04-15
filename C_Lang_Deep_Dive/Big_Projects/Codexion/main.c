@@ -53,4 +53,6 @@ int	main(int argc, char **argv)
 	creat_dongels_list (Edited)
 	free_dongles_list (Edited)
 
+
+	what is dead lock ?
 */
