@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
-// #include <string.h>
+#include <string.h>
 #include <stdlib.h>
 #include <sys/time.h>
 
@@ -30,38 +30,49 @@ typedef enum e_coder_state
 
 } t_coder_state;
 
-typedef struct s_order_list
-{
-    int                 order;
-    struct s_order_list *next;
-} t_order_list;
-
-typedef struct s_dongle
-{
-    t_order_list        *order_list;
-    short               is_available;
-    struct s_dongle     *left_dongle;
-    struct s_dongle     *right_dongle;
-
-} t_dongle;
+typedef struct s_coder_heap {
+    t_coder **elements;
+    int size;
+    int capacity;
+    char scheduler;  // 'f' for fifo, 'e' for edf
+} t_coder_heap;
 
 typedef struct s_coder
 {
     struct s_coder  *next;
+    short           head;
+    short           tail;
     int             coder_number;
     long long       last_compile_time;
     long long       deadline;
     long long       creation_time;
     long long       time_to_burnout;
     t_coder_state   status;
-
+    
 } t_coder;
+
+typedef struct s_dongle
+{
+    int             number;
+    short           is_rested;
+    long long       how_much_to_rest;
+    long long       toked_at;
+    int             toked_by;
+    short           left_coder;
+    short           right_coder;
+    struct s_dongle *next;
+    t_coder_heap    *waiting_coders;  // Add this field
+
+} t_dongle;
 
 typedef struct s_simulation
 {
     t_args          args;
+    t_dongle        *dongles;
     t_coder         *coders;
-    pthread_mutex_t *mutex_lock;
+    pthread_mutex_t mutex_lock;
+    pthread_cond_t  cond_lock;
+    int             threads_at_barrier;
     
 } t_simulation;
 
