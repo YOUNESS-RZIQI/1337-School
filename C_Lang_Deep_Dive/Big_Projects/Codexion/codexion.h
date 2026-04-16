@@ -33,8 +33,7 @@ typedef enum e_coder_state
 typedef struct s_coder
 {
     struct s_coder  *next;
-    short           head;
-    short           tail;
+
     int             coder_number;
     long long       last_compile_time;
     long long       deadline;
@@ -57,6 +56,7 @@ typedef struct s_dongle
     short           is_rested;
     long long       how_much_to_rest;
     long long       toked_at;
+    long long       toked_by;
     short           left_coder;
     short           right_coder;
     struct s_dongle *next;

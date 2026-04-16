@@ -18,22 +18,20 @@ t_coder *create_coder(int coder_number, t_simulation *sim)
     gettimeofday(&tv, NULL);
     coder->creation_time = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
     coder->status = WAITING;
-    coder->head = 1;
-    coder->tail = sim->args.number_of_coders;
     
     return (coder);
 }
 
 void    add_coder_to_list(t_coder *coder, t_simulation *sim)
 {
-    coder->head = 0;
-    coder->tail = 0;
+    // coder->head = 0;
+    // coder->tail = 0;
     coder->next = NULL;
 
     if (sim->coders == NULL)
     {
-        coder->head = 1;
-        coder->tail = 1;
+        // coder->head = 1;
+        // coder->tail = 1;
         sim->coders = coder;
     }
     else
@@ -42,8 +40,8 @@ void    add_coder_to_list(t_coder *coder, t_simulation *sim)
         while (current->next != NULL)
             current = current->next;
         
-        current->tail = 0;
-        coder->tail = 1;
+        // current->tail = 0;
+        // coder->tail = 1;
         current->next = coder;
     }
 }
@@ -152,121 +150,17 @@ short    creat_dongels_list(t_simulation *sim)
 
 
 
-//   Start  Heap
 
-/*
-static int parent(int i)
-{
-    return (i - 1) / 2;
-}
-
-static int left_child(int i)
-{
-    return 2 * i + 1;
-}
-
-static int right_child(int i)
-{
-    return 2 * i + 2;
-}
-
-int heap_is_empty(t_coder_heap *heap)
-{
-    return heap->size == 0;
-}
-
-int heap_size(t_coder_heap *heap)
-{
-    return heap->size;
-}
-
-static int compare_coders_how_smalest(t_coder *a, t_coder *b, char scheduler)
-{
-    if (scheduler == 'f')
-    {
-        if (a->creation_time < b->creation_time) return -1;
-        if (a->creation_time > b->creation_time) return 1;
-        return 0;
-    }
-    else if (scheduler == 'e')
-    {
-        long long deadline_a = a->deadline;
-        long long deadline_b = b->deadline;
-        if (deadline_a < deadline_b) return -1;
-        if (deadline_a > deadline_b) return 1;
-        return 0;
-    }
-    return 0;
-}
-
-heapify_up maintains the min-heap property after inserting a new element. It "bubbles up" the new element until it's in the correct position (parent is smaller than child).
-static void heapify_up(t_coder_heap *heap, int index)
-{
-    int p = parent(index);
-    while (index > 0 && compare_coders_how_smalest(heap->elements[index], heap->elements[p], heap->scheduler) < 0)
-    {
-        t_coder *temp = heap->elements[index];
-        heap->elements[index] = heap->elements[p];
-        heap->elements[p] = temp;
-        index = p;
-        p = parent(index);
-    }
-}
-
-after extraction we need to move the big head do the botume.
-static void heapify_down(t_coder_heap *heap, int index)
-{
-    int left = left_child(index);
-    int right = right_child(index);
-    int smallest = index;
-
-    if (left < heap->size && compare_coders_how_smalest(heap->elements[left], heap->elements[smallest], heap->scheduler) < 0)
-        smallest = left;
-    if (right < heap->size && compare_coders_how_smalest(heap->elements[right], heap->elements[smallest], heap->scheduler) < 0)
-        smallest = right;
-
-    if (smallest != index)
-    {
-        t_coder *temp = heap->elements[index];
-        heap->elements[index] = heap->elements[smallest];
-        heap->elements[smallest] = temp;
-        heapify_down(heap, smallest);
-    }
-}
-
-int heap_insert(t_coder_heap *heap, t_coder *coder)
-{
-    if (heap->size >= heap->capacity)
-        return 0;
-    heap->elements[heap->size] = coder;
-    heap->size++;
-    heapify_up(heap, heap->size - 1);
-    return 1;
-}
-
-t_coder *heap_extract_min(t_coder_heap *heap)
-{
-    if (heap->size == 0)
-        return NULL;
-    t_coder *min = heap->elements[0];
-    heap->elements[0] = heap->elements[heap->size - 1];
-    heap->size--;
-    if (heap->size > 0)
-        heapify_down(heap, 0);
-    return min;
-}
-*/
-
-//  End  Heap
 
 
 #include <stdlib.h>
 
 void *run_simulation(void *sim)
 {
-    t_simulation    *sim_data_ad = (t_simulation*)sim;
+    t_simulation    *sim_data_ad;
     int             i;
 
+    sim_data_ad = (t_simulation*)sim;
     pthread_mutex_lock(&sim_data_ad->mutex_lock);
     sim_data_ad->threads_at_barrier++;
     while (sim_data_ad->threads_at_barrier < sim_data_ad->args.number_of_coders)
@@ -279,7 +173,6 @@ void *run_simulation(void *sim)
     // // lock unlock times : coders/2
 
     // // alwasy the top ones N   & N = coders/2
-
 
 
 
