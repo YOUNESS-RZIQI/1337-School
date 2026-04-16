@@ -37,22 +37,11 @@ int	main(int argc, char **argv)
 }
 /*
 
-	The heap struct.
-	heap_init
-	in t_dongle we add the waiting_coders
-	Parent
-	left_chile
-	reight_child
-	compare_two_coders
-	heapify_up
-	heapify_down
-	heap_insert
-	heap_etract_min
+	heap_extract_min
 	heap_is_empty
-	heap_size
 	creat_dongels_list (Edited)
 	free_dongles_list (Edited)
 
-
+	what is index ?
 	what is dead lock ?
 */

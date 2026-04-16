@@ -30,13 +30,6 @@ typedef enum e_coder_state
 
 } t_coder_state;
 
-typedef struct s_coder_heap {
-    t_coder **elements;
-    int size;
-    int capacity;
-    char scheduler;  // 'f' for fifo, 'e' for edf
-} t_coder_heap;
-
 typedef struct s_coder
 {
     struct s_coder  *next;
@@ -51,17 +44,23 @@ typedef struct s_coder
     
 } t_coder;
 
+typedef struct s_heap {
+    t_coder **elements;
+    int size;
+    int capacity;
+    char scheduler;  // 'f' for fifo, 'e' for edf
+} t_heap;
+
 typedef struct s_dongle
 {
     int             number;
     short           is_rested;
     long long       how_much_to_rest;
     long long       toked_at;
-    int             toked_by;
     short           left_coder;
     short           right_coder;
     struct s_dongle *next;
-    t_coder_heap    *waiting_coders;  // Add this field
+    t_heap          *waiting_coders;
 
 } t_dongle;
 

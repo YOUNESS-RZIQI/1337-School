@@ -1,48 +1,6 @@
 #include "codexion.h"
 
-void *run_simulation(void *sim)
-{
-    t_simulation    *sim_data_ad = (t_simulation*)sim;
-    int             i;
-
-    pthread_mutex_lock(&sim_data_ad->mutex_lock);
-    sim_data_ad->threads_at_barrier++;
-    while (sim_data_ad->threads_at_barrier < sim_data_ad->args.number_of_coders)
-        pthread_cond_wait(&sim_data_ad->cond_lock, &sim_data_ad->mutex_lock);
-    if (sim_data_ad->threads_at_barrier == sim_data_ad->args.number_of_coders)
-        pthread_cond_broadcast(&sim_data_ad->cond_lock);
-    pthread_mutex_unlock(&sim_data_ad->mutex_lock);    
-    
-    
-    // // lock unlock times : coders/2
-
-    // // alwasy the top ones N   & N = coders/2
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // pthread_mutex_lock(&(*sim_data_ad).mutex_lock);
-    // t_dongle *head = sim_data_ad->dongles;
-    // while (head)
-    // {
-    //     printf("%lld", head->how_much_to_rest);
-    //     head = head->next;
-    // }
-    // printf("\n");
-    
-    // pthread_mutex_unlock(&(*sim_data_ad).mutex_lock);
-
-    return NULL;
-}
+// Start Coder
 
 t_coder *create_coder(int coder_number, t_simulation *sim)
 {
@@ -90,23 +48,43 @@ void    add_coder_to_list(t_coder *coder, t_simulation *sim)
     }
 }
 
+// End Coder
+
+
+
+// Start Dongle
+
 void    creat_dongle_2(int    number, t_dongle   *dongle, t_simulation   *sim)
 {
     if (number == sim->args.number_of_coders)
     {
         dongle->left_coder = number - 1;
-        dongle->right_coder = 1;
+        dongle->right_coder = number;
     }
     else if (number == 1)
     {
         dongle->left_coder = sim->args.number_of_coders;
-        dongle->right_coder = number + 1;
+        dongle->right_coder = 1;
     }
     else
     {
         dongle->left_coder = number - 1;
-        dongle->right_coder = number + 1;
+        dongle->right_coder = number;
     }
+}
+
+void heap_init(t_heap *heap, const char *scheduler)
+{
+    heap->elements = malloc(2 * sizeof(t_coder*));
+    if (heap->elements == NULL)
+    {
+        heap->capacity = 0;
+        heap->size = 0;
+        return;
+    }
+    heap->size = 0;
+    heap->capacity = 2;
+    heap->scheduler = scheduler[0];  // 'f' or 'e'
 }
 
 t_dongle *create_dongle(int number, t_simulation *sim)
@@ -120,9 +98,16 @@ t_dongle *create_dongle(int number, t_simulation *sim)
     dongle->is_rested = 1;
     dongle->how_much_to_rest = sim->args.dongle_cooldown;
     dongle->toked_at = 0;
-    dongle->toked_by = 0;
     creat_dongle_2(number, dongle, sim);
     dongle->next = NULL;
+    dongle->waiting_coders = malloc(sizeof(t_heap));
+    if (dongle->waiting_coders)
+        heap_init(dongle->waiting_coders, sim->args.scheduler);
+    else
+        return (free(dongle), NULL);
+    if (dongle->waiting_coders->capacity == 0)
+        return (free(dongle), NULL);
+
     return dongle;
 }
 
@@ -139,7 +124,7 @@ void    free_dongles_list(t_dongle *head)
     }
 }
 
-void    creat_dongels_list(t_simulation *sim)
+short    creat_dongels_list(t_simulation *sim)
 {
     int i;
     int num_dongles;
@@ -153,34 +138,171 @@ void    creat_dongels_list(t_simulation *sim)
     {
         dongle = create_dongle(i, sim);
         if (!dongle)
-            return (free_dongles_list(sim->dongles));
+            return (free_dongles_list(sim->dongles), 1);
         if (!sim->dongles)
             sim->dongles = dongle;
         else
             prev->next = dongle;
         prev = dongle;
     }
+    return 0;
 }
 
+// End Dongle
 
-// void    add_coder_to_list(t_coder *coder, t_simulation *sim)
-// {
-// 
-    // coder->next = NULL;
-    // if (sim->coders == NULL)
-    // {
-        // sim->coders = coder;
-    // }
-    // else
-    // {
-        // t_coder *current = sim->coders;
-        // while (current->next != NULL)
-        // {
-            // current = current->next;
-        // }
-        // current->next = coder;
-    // }
-// }
+
+
+//   Start  Heap
+
+/*
+static int parent(int i)
+{
+    return (i - 1) / 2;
+}
+
+static int left_child(int i)
+{
+    return 2 * i + 1;
+}
+
+static int right_child(int i)
+{
+    return 2 * i + 2;
+}
+
+int heap_is_empty(t_coder_heap *heap)
+{
+    return heap->size == 0;
+}
+
+int heap_size(t_coder_heap *heap)
+{
+    return heap->size;
+}
+
+static int compare_coders_how_smalest(t_coder *a, t_coder *b, char scheduler)
+{
+    if (scheduler == 'f')
+    {
+        if (a->creation_time < b->creation_time) return -1;
+        if (a->creation_time > b->creation_time) return 1;
+        return 0;
+    }
+    else if (scheduler == 'e')
+    {
+        long long deadline_a = a->deadline;
+        long long deadline_b = b->deadline;
+        if (deadline_a < deadline_b) return -1;
+        if (deadline_a > deadline_b) return 1;
+        return 0;
+    }
+    return 0;
+}
+
+heapify_up maintains the min-heap property after inserting a new element. It "bubbles up" the new element until it's in the correct position (parent is smaller than child).
+static void heapify_up(t_coder_heap *heap, int index)
+{
+    int p = parent(index);
+    while (index > 0 && compare_coders_how_smalest(heap->elements[index], heap->elements[p], heap->scheduler) < 0)
+    {
+        t_coder *temp = heap->elements[index];
+        heap->elements[index] = heap->elements[p];
+        heap->elements[p] = temp;
+        index = p;
+        p = parent(index);
+    }
+}
+
+after extraction we need to move the big head do the botume.
+static void heapify_down(t_coder_heap *heap, int index)
+{
+    int left = left_child(index);
+    int right = right_child(index);
+    int smallest = index;
+
+    if (left < heap->size && compare_coders_how_smalest(heap->elements[left], heap->elements[smallest], heap->scheduler) < 0)
+        smallest = left;
+    if (right < heap->size && compare_coders_how_smalest(heap->elements[right], heap->elements[smallest], heap->scheduler) < 0)
+        smallest = right;
+
+    if (smallest != index)
+    {
+        t_coder *temp = heap->elements[index];
+        heap->elements[index] = heap->elements[smallest];
+        heap->elements[smallest] = temp;
+        heapify_down(heap, smallest);
+    }
+}
+
+int heap_insert(t_coder_heap *heap, t_coder *coder)
+{
+    if (heap->size >= heap->capacity)
+        return 0;
+    heap->elements[heap->size] = coder;
+    heap->size++;
+    heapify_up(heap, heap->size - 1);
+    return 1;
+}
+
+t_coder *heap_extract_min(t_coder_heap *heap)
+{
+    if (heap->size == 0)
+        return NULL;
+    t_coder *min = heap->elements[0];
+    heap->elements[0] = heap->elements[heap->size - 1];
+    heap->size--;
+    if (heap->size > 0)
+        heapify_down(heap, 0);
+    return min;
+}
+*/
+
+//  End  Heap
+
+
+#include <stdlib.h>
+
+void *run_simulation(void *sim)
+{
+    t_simulation    *sim_data_ad = (t_simulation*)sim;
+    int             i;
+
+    pthread_mutex_lock(&sim_data_ad->mutex_lock);
+    sim_data_ad->threads_at_barrier++;
+    while (sim_data_ad->threads_at_barrier < sim_data_ad->args.number_of_coders)
+        pthread_cond_wait(&sim_data_ad->cond_lock, &sim_data_ad->mutex_lock);
+    if (sim_data_ad->threads_at_barrier == sim_data_ad->args.number_of_coders)
+        pthread_cond_broadcast(&sim_data_ad->cond_lock);
+    pthread_mutex_unlock(&sim_data_ad->mutex_lock);    
+    
+    
+    // // lock unlock times : coders/2
+
+    // // alwasy the top ones N   & N = coders/2
+
+
+
+
+
+
+
+    pthread_mutex_lock(&(*sim_data_ad).mutex_lock);
+    t_dongle *head = sim_data_ad->dongles;
+    system("clear");
+    while (head)
+    {
+        printf("Number: %d\n", head->number);
+        printf("left coder: %d\n", head->left_coder);
+        printf("right coder: %d\n", head->right_coder);
+        printf("\n");
+        head = head->next;
+    }
+    printf("\n");
+    
+    pthread_mutex_unlock(&(*sim_data_ad).mutex_lock);
+
+    return NULL;
+}
 
 pthread_t *creat_n_threads_and_start_sim(int num, t_simulation *sim)
 {
@@ -188,10 +310,13 @@ pthread_t *creat_n_threads_and_start_sim(int num, t_simulation *sim)
     t_coder *coder;
     int i;
 
+
     p_th = malloc(num * sizeof(pthread_t));
     if (p_th == NULL)
         return NULL;
-    i = 0;
+    i = creat_dongels_list(sim);
+    if (i == 1)
+        return (NULL);
     while (i++ < num)
     {
         coder = create_coder(i, sim);
@@ -200,8 +325,6 @@ pthread_t *creat_n_threads_and_start_sim(int num, t_simulation *sim)
         add_coder_to_list(coder, sim);
         pthread_create(&p_th[i], NULL, run_simulation, (void*)sim);
     }
-    creat_dongels_list(sim);
-    pthread_cond_broadcast(&sim->cond_lock);
     i = 0;
     while (i < num)
         pthread_join(p_th[i++], NULL);
