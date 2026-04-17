@@ -43,13 +43,6 @@ typedef struct s_coder
     
 } t_coder;
 
-typedef struct s_heap {
-    t_coder **elements;
-    int size;
-    int capacity;
-    char scheduler;  // 'f' for fifo, 'e' for edf
-} t_heap;
-
 typedef struct s_dongle
 {
     int             number;
@@ -60,7 +53,7 @@ typedef struct s_dongle
     short           left_coder;
     short           right_coder;
     struct s_dongle *next;
-    t_heap          *waiting_coders;
+    t_coder          *waiting_coder;  // Simple pointer - only 1 coder can wait
 
 } t_dongle;
 
@@ -70,6 +63,7 @@ typedef struct s_simulation
     t_dongle        *dongles;
     t_coder         *coders;
     pthread_mutex_t mutex_lock;
+    pthread_mutex_t dongle_lock;
     pthread_cond_t  cond_lock;
     int             threads_at_barrier;
     

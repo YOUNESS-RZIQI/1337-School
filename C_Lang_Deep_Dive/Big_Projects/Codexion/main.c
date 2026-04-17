@@ -12,14 +12,26 @@ short simulation(t_args data)
 	sim.dongles = NULL;
 	sim.threads_at_barrier = 0;
     pthread_mutex_init(&sim.mutex_lock, NULL);
+    pthread_mutex_init(&sim.dongle_lock, NULL);
 	pthread_cond_init(&sim.cond_lock, NULL);
 
 	p_th = creat_n_threads_and_start_sim(data.number_of_coders, &sim);
 
-    if (!p_th)
+if (!p_th)
         return (null_error_message());
 
-	free(p_th);
+    // Free coders list
+    t_coder *c = sim.coders;
+    while (c)
+    {
+        t_coder *next = c->next;
+        free(c);
+        c = next;
+    }
+    free_dongles_list(sim.dongles);
+    pthread_mutex_destroy(&sim.mutex_lock);
+    pthread_mutex_destroy(&sim.dongle_lock);
+    free(p_th);
     return 0;
 }
 
