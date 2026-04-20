@@ -1,59 +1,112 @@
-
 #include "codexion.h"
 
-short simulation(t_args data)
+static void	destroy_dongle_mutexes(t_simulation *sim)
 {
-    pthread_t *p_th;
-	t_simulation sim;
+	int	i;
 
-	p_th = NULL;
-	sim.args = data;
-	sim.coders = NULL;
-	sim.dongles = NULL;
-	sim.threads_at_barrier = 0;
-    pthread_mutex_init(&sim.mutex_lock, NULL);
-    pthread_mutex_init(&sim.dongle_lock, NULL);
-	pthread_cond_init(&sim.cond_lock, NULL);
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		pthread_mutex_destroy(&sim->dongles[i].lock);
+		pthread_cond_destroy(&sim->dongles[i].cond);
+		i++;
+	}
+}
 
-	p_th = creat_n_threads_and_start_sim(data.number_of_coders, &sim);
+// O(1) + 
+static void	cleanup_sim(t_simulation *sim, pthread_t *th, short destroy_mutexes)
+{
+	if (sim->dongles)
+	{
+		if (destroy_mutexes)
+			destroy_dongle_mutexes(sim);
+		free(sim->dongles);
+	}
+	if (sim->coders)
+		free(sim->coders);
+	if (th)
+		free(th);
+	if (destroy_mutexes)
+	{
+		pthread_mutex_destroy(&sim->print_mutex);
+		pthread_mutex_destroy(&sim->sim_mutex);
+		pthread_cond_destroy(&sim->cond_lock);
+	}
+}
 
-if (!p_th)
-        return (null_error_message());
+static short	start_threads(t_simulation *sim, pthread_t *th)
+{
+	pthread_t	monitor;
+	int			i;
 
-    // Free coders list
-    t_coder *c = sim.coders;
-    while (c)
-    {
-        t_coder *next = c->next;
-        free(c);
-        c = next;
-    }
-    free_dongles_list(sim.dongles);
-    pthread_mutex_destroy(&sim.mutex_lock);
-    pthread_mutex_destroy(&sim.dongle_lock);
-    free(p_th);
-    return 0;
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		if (pthread_create(&th[i], NULL, run_simulation, &sim->coders[i]) != 0)
+			return (1);
+		i++;
+	}
+	if (pthread_create(&monitor, NULL, run_monitor, sim) != 0)
+		return (1);
+	pthread_join(monitor, NULL);
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		pthread_join(th[i], NULL);
+		i++;
+	}
+	return (0);
+}
+
+static short	initialize_simulation(t_simulation *sim, pthread_t **th)
+{
+	sim->coders = malloc(sizeof(t_coder) * sim->args.number_of_coders);
+	sim->dongles = malloc(sizeof(t_dongle) * sim->args.number_of_coders);
+	if (!sim->coders || !sim->dongles)
+		return (1);
+	*th = malloc(sizeof(pthread_t) * sim->args.number_of_coders);
+	if (!*th)
+		return (1);
+	sim->stop_simulation = 0;
+	sim->start_time = 0;
+	sim->threads_at_barrier = 0;
+	init_dongles(sim);
+	init_coders(sim);
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	t_args	data;
-
-	data = convert_args(argc, argv);
-
-	if (is_empty_args(data))
-		return (input_error_message());
-
-    return (simulation(data));
-
+	t_simulation	sim;
+	pthread_t		*th;
+	
+	sim.args = convert_args(argc, argv);
+	if (is_empty_args(sim.args))
+		return (1);
+	if (initialize_simulation(&sim, &th) != 0)
+	{
+		cleanup_sim(&sim, th, 0);
+		return (1);
+	}
+	if (initialize_all_mutexes(&sim) == 0)
+	{
+		start_threads(&sim, th);
+		cleanup_sim(&sim, th, 1);
+	}
+	else
+		cleanup_sim(&sim, th, 0);
+	return (0);
 }
+
 /*
-
-	heap_extract_min
-	heap_is_empty
-	creat_dongels_list (Edited)
-	free_dongles_list (Edited)
-
-	what is index ?
-	what is dead lock ?
+** SYSTEM DESIGN OVERVIEW
+** ======================
+** [main] → creates dongles → creates coder threads → creates monitor thread
+** [coder thread] → waits for 2 dongles → compiles → releases dongles → debug 
+** → refactor → repeat
+** [dongle] → protected by mutex + cond → uses heap queue for FIFO/EDF 
+** → enforces cooldown
+** [monitor] → checks every coder's time_since_last_compile → prints burnout 
+** → stops simulation
+** [print_mutex] → serializes all printf output → no interleaved messages
 */

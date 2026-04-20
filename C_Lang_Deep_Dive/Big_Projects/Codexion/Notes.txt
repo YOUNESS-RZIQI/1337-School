@@ -1,0 +1,2 @@
+1) in @dongle.c, there is sim not used ??
+2) 

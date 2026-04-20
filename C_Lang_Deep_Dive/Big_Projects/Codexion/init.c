@@ -1,0 +1,69 @@
+#include "codexion.h"
+
+short	initialize_all_mutexes(t_simulation *sim)
+{
+	int	i;
+
+	if (pthread_mutex_init(&sim->print_mutex, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&sim->sim_mutex, NULL) != 0)
+		return (1);
+	if (pthread_cond_init(&sim->cond_lock, NULL) != 0)
+		return (1);
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		if (pthread_mutex_init(&sim->dongles[i].lock, NULL) != 0)
+			return (1);
+		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	init_dongles(t_simulation *sim)
+{
+	int	i;
+	int	n;
+
+	i = 0;
+	n = sim->args.number_of_coders;
+	while (i < n)
+	{
+		sim->dongles[i].number = i + 1;
+		sim->dongles[i].dongle_is_available = 1;
+		sim->dongles[i].how_much_to_rest = sim->args.dongle_cooldown;
+		sim->dongles[i].toked_at = 0;
+		sim->dongles[i].toked_by = 0;
+		sim->dongles[i].queue_size = 0;
+		if (i + 1 == 1)
+		{
+			sim->dongles[i].left_coder = n;
+			sim->dongles[i].right_coder = 1;
+		}
+		else
+		{
+			sim->dongles[i].left_coder = i;
+			sim->dongles[i].right_coder = i + 1;
+		}
+		i++;
+	}
+}
+
+void	init_coders(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		sim->coders[i].coder_number = i + 1;
+		sim->coders[i].time_since_last_compile = get_current_time_ms();
+		sim->coders[i].time_to_burnout = sim->args.time_to_burnout;
+		sim->coders[i].status = WAITING;
+		sim->coders[i].compile_count = 0;
+		sim->coders[i].sim = sim;
+		i++;
+	}
+}
