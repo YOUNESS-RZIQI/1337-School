@@ -12,8 +12,8 @@ long long arrival)
 	dongle->queue[dongle->queue_size].arrival_time = arrival;
 	if (dongle->queue_size == 1)
 	{
-		if (dongle->queue[1].priority < dongle->queue[0].priority || \ 
-			(dongle->queue[1].priority == dongle->queue[0].priority && \
+		if (dongle->queue[1].priority < dongle->queue[0].priority || 
+			(dongle->queue[1].priority == dongle->queue[0].priority &&
 			dongle->queue[1].arrival_time < dongle->queue[0].arrival_time))
 		{
 			temp = dongle->queue[0];

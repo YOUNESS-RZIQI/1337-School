@@ -70,6 +70,20 @@ void	coder_work(t_coder *coder, t_simulation *sim)
 	coder->status = REFACTORING;
 	safe_print(sim, coder->coder_number, "is refactoring");
 	sleep_action(sim, sim->args.time_to_refactor);
+
+	/* Fairness delay to prevent starvation */
+	long long t_compile = sim->args.time_to_compile;
+	long long t_debug = sim->args.time_to_debug;
+	long long t_refactor = sim->args.time_to_refactor;
+	long long wait_time;
+
+	if (sim->args.number_of_coders % 2 != 0)
+		wait_time = (t_compile * 2) - (t_debug + t_refactor);
+	else
+		wait_time = t_compile - (t_debug + t_refactor);
+	
+	if (wait_time > 0)
+		sleep_action(sim, wait_time);
 }
 
 static void	wait_barrier(t_simulation *sim, t_coder *coder)
@@ -98,7 +112,15 @@ void	*run_simulation(void *arg)
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
+	// Synchronise: wait until every coder thread has started.
 	wait_barrier(sim, coder);
+
+	/* Stagger initial compilation to prevent massive initial collision */
+	if (coder->coder_number % 2 == 0)
+		sleep_action(sim, sim->args.time_to_compile / 2);
+	else if (sim->args.number_of_coders % 2 != 0 && coder->coder_number == sim->args.number_of_coders)
+		sleep_action(sim, sim->args.time_to_compile);
+
 	while (coder->compile_count < sim->args.number_of_compiles_required)
 	{
 		pthread_mutex_lock(&sim->sim_mutex);
