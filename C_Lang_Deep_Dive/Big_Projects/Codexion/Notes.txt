@@ -1,2 +1,8 @@
 1) in @dongle.c, there is sim not used ??
-2) 
+
+
+2) why the time long long why not just long ?
+
+3) the parameters of creat,join, mutex, cond that i do not know ??
+
+4) 

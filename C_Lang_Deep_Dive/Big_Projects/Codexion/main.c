@@ -99,14 +99,21 @@ int	main(int argc, char **argv)
 }
 
 /*
-** SYSTEM DESIGN OVERVIEW
-** ======================
-** [main] → creates dongles → creates coder threads → creates monitor thread
-** [coder thread] → waits for 2 dongles → compiles → releases dongles → debug 
-** → refactor → repeat
-** [dongle] → protected by mutex + cond → uses heap queue for FIFO/EDF 
-** → enforces cooldown
-** [monitor] → checks every coder's time_since_last_compile → prints burnout 
-** → stops simulation
-** [print_mutex] → serializes all printf output → no interleaved messages
+
+	args.c					|done|
+	codexion.h				|done|
+	init.c					|done|
+	main.c					|done|
+	utils.c					|Not done|
+	dongle_utils.c			|done|
+
+
+	dongle.c				|Not done|
+	heap.c					|Not done|
+	Makefile				|Not done|
+	monitor.c				|Not done|
+	simulation_utils.c		|Not done|
+	simulation.c			|Not done|
+	utils_2.c				|Not done|
+
 */

@@ -1,2 +1,0 @@
-"#include \"codexion.h\"\n\nshort\tinitialize_all_mutexes(t_simulation *sim)\n{\n\tint\ti;\n\n\tif (pthread_mutex_init(&sim->print_mutex, NULL) != 0)\n\t\treturn (1);\n\tif (pthread_mutex_init(&sim->sim_mutex, NULL) != 0)\n\t\treturn (1);\n\tif (pthread_co
-<truncated 3670 bytes>
