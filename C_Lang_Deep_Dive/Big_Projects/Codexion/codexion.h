@@ -81,6 +81,7 @@ typedef struct s_simulation
 short		is_full_digit(char *s);
 long long	ft_atoi(const char *s);
 long long	get_current_time_ms(void);
+void		destroy_dongle_mutexes(t_simulation *sim);
 short		null_error_message(void);
 short		input_error_message(void);
 

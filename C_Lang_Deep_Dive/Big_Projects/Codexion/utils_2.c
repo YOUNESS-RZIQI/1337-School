@@ -19,3 +19,16 @@ short	input_error_message(void)
 	write(2, "! ! ! Error in Input ! ! !\n", 28);
 	return (1);
 }
+
+void	destroy_dongle_mutexes(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		pthread_mutex_destroy(&sim->dongles[i].lock);
+		pthread_cond_destroy(&sim->dongles[i].cond);
+		i++;
+	}
+}

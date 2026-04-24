@@ -1,0 +1,27 @@
+--- simulation_utils.c
++++ simulation_utils.c
+@@ -62,17 +62,24 @@
+ void	wait_barrier(t_simulation *sim, t_coder *coder)
+ {
++	printf("coder %d: locking sim_mutex in wait_barrier\n", coder->coder_number);
+ 	pthread_mutex_lock(&sim->sim_mutex);
++	printf("coder %d: locked sim_mutex in wait_barrier\n", coder->coder_number);
+ 	sim->threads_at_barrier++;
+ 	if (sim->threads_at_barrier == sim->args.number_of_coders)
+ 	{
+ 		sim->start_time = get_current_time_ms();
+ 		pthread_cond_broadcast(&sim->cond_lock);
+ 	}
+ 	else
+ 	{
+ 		while (sim->threads_at_barrier < sim->args.number_of_coders
+ 			&& !sim->stop_simulation)
++		{
++			printf("coder %d: cond_wait\n", coder->coder_number);
+ 			pthread_cond_wait(&sim->cond_lock, &sim->sim_mutex);
++			printf("coder %d: cond_wait woke up, stop=%d\n", coder->coder_number, sim->stop_simulation);
++		}
+ 	}
+ 	coder->time_since_last_compile = sim->start_time;
++	printf("coder %d: unlocking sim_mutex in wait_barrier\n", coder->coder_number);
+ 	pthread_mutex_unlock(&sim->sim_mutex);

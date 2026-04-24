@@ -68,7 +68,8 @@ void	*run_monitor(void *arg)
 
 	sim = (t_simulation *)arg;
 	pthread_mutex_lock(&sim->sim_mutex);
-	while (sim->threads_at_barrier < sim->args.number_of_coders)
+	while (sim->threads_at_barrier < sim->args.number_of_coders
+		&& !sim->stop_simulation)
 		pthread_cond_wait(&sim->cond_lock, &sim->sim_mutex);
 	pthread_mutex_unlock(&sim->sim_mutex);
 	while (1)

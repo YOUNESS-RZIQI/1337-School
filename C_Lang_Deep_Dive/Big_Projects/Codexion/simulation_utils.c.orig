@@ -67,8 +67,7 @@ void	wait_barrier(t_simulation *sim, t_coder *coder)
 	}
 	else
 	{
-		while (sim->threads_at_barrier < sim->args.number_of_coders
-			&& !sim->stop_simulation)
+		while (sim->threads_at_barrier < sim->args.number_of_coders)
 			pthread_cond_wait(&sim->cond_lock, &sim->sim_mutex);
 	}
 	coder->time_since_last_compile = sim->start_time;

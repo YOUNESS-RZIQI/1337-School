@@ -1,25 +1,62 @@
 #include "codexion.h"
 
-short	initialize_all_mutexes(t_simulation *sim)
+static void	cleanup_partial_mutexes(t_simulation *sim, int step, int d_idx)
 {
 	int	i;
 
+	if (step >= 1)
+		pthread_mutex_destroy(&sim->print_mutex);
+	if (step >= 2)
+		pthread_mutex_destroy(&sim->sim_mutex);
+	if (step >= 3)
+	{
+		pthread_cond_destroy(&sim->cond_lock);
+		i = -1;
+		while (++i < d_idx)
+		{
+			pthread_mutex_destroy(&sim->dongles[i].lock);
+			pthread_cond_destroy(&sim->dongles[i].cond);
+		}
+	}
+}
+
+static short	init_dongle_mutexes(t_simulation *sim)
+{
+	int	i;
+
+	i = -1;
+	while (++i < sim->args.number_of_coders)
+	{
+		if (pthread_mutex_init(&sim->dongles[i].lock, NULL) != 0)
+		{
+			cleanup_partial_mutexes(sim, 3, i);
+			return (1);
+		}
+		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
+		{
+			pthread_mutex_destroy(&sim->dongles[i].lock);
+			cleanup_partial_mutexes(sim, 3, i);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+short	initialize_all_mutexes(t_simulation *sim)
+{
 	if (pthread_mutex_init(&sim->print_mutex, NULL) != 0)
 		return (1);
 	if (pthread_mutex_init(&sim->sim_mutex, NULL) != 0)
-		return (1);
-	if (pthread_cond_init(&sim->cond_lock, NULL) != 0)
-		return (1);
-	i = 0;
-	while (i < sim->args.number_of_coders)
 	{
-		if (pthread_mutex_init(&sim->dongles[i].lock, NULL) != 0)
-			return (1);
-		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
-			return (1);
-		i++;
+		cleanup_partial_mutexes(sim, 1, 0);
+		return (1);
 	}
-	return (0);
+	if (pthread_cond_init(&sim->cond_lock, NULL) != 0)
+	{
+		cleanup_partial_mutexes(sim, 2, 0);
+		return (1);
+	}
+	return (init_dongle_mutexes(sim));
 }
 
 void	init_dongles(t_simulation *sim)
