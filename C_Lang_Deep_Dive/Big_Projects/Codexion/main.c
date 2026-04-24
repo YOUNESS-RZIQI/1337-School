@@ -81,6 +81,7 @@ int	main(int argc, char **argv)
 	pthread_t		*th;
 	
 	sim.args = convert_args(argc, argv);
+	th = NULL;
 	if (is_empty_args(sim.args))
 		return (1);
 	if (initialize_simulation(&sim, &th) != 0)
