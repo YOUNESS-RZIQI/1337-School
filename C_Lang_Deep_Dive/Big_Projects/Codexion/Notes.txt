@@ -13,4 +13,5 @@
 
 6) what is priority ? in the heap_push
 
-7) 
+			usleep((unsigned int)(remaining * 1000));
+7) why : 
