@@ -5,4 +5,6 @@
 
 3) the parameters of creat,join, mutex, cond that i do not know ??
 
-4) 
+4) why we do have wake_all_dongles ?
+
+5) 

@@ -106,16 +106,18 @@ int	main(int argc, char **argv)
 	codexion.h				|done|
 	init.c					|done|
 	main.c					|done|
-	utils.c					|Not done|
+	utils.c					|done|
 	dongle_utils.c			|done|
+	utils_2.c				|done|
+
+
+	heap.c					|Not done|
 
 
 	dongle.c				|Not done|
-	heap.c					|Not done|
 	Makefile				|Not done|
 	monitor.c				|Not done|
 	simulation_utils.c		|Not done|
 	simulation.c			|Not done|
-	utils_2.c				|Not done|
 
 */
