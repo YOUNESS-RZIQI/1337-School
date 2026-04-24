@@ -16,7 +16,7 @@ static void	wait_cooldown(t_dongle *d, t_simulation *sim)
 		if (remaining <= 0 || stop)
 			break ;
 		if (remaining > 5)
-			usleep((useconds_t)(remaining * 800));
+			usleep((unsigned int)(remaining * 1000));
 		else if (remaining > 2)
 			usleep(500);
 	}

@@ -10,7 +10,8 @@ long long arrival)
 	dongle->queue[dongle->queue_size].coder = coder;
 	dongle->queue[dongle->queue_size].priority = priority;
 	dongle->queue[dongle->queue_size].arrival_time = arrival;
-	if (dongle->queue_size == 1)
+	dongle->queue_size++;
+	if (dongle->queue_size == 2)
 	{
 		if (dongle->queue[1].priority < dongle->queue[0].priority || \
 			(dongle->queue[1].priority == dongle->queue[0].priority && \
@@ -21,7 +22,6 @@ long long arrival)
 			dongle->queue[1] = temp;
 		}
 	}
-	dongle->queue_size++;
 }
 
 t_coder	*heap_extract_min(t_dongle *dongle)

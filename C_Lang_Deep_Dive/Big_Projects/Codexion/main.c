@@ -109,12 +109,12 @@ int	main(int argc, char **argv)
 	utils.c					|done|
 	dongle_utils.c			|done|
 	utils_2.c				|done|
+	heap.c					|done|
 
-
-	heap.c					|Not done|
-
-
+	
 	dongle.c				|Not done|
+
+
 	Makefile				|Not done|
 	monitor.c				|Not done|
 	simulation_utils.c		|Not done|

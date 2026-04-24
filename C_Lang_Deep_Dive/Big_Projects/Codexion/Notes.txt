@@ -7,4 +7,10 @@
 
 4) why we do have wake_all_dongles ?
 
-5) 
+5) 	if (dongle->queue_size >= 2)
+		return ;
+        do we push to the heap more then two times ?
+
+6) what is priority ? in the heap_push
+
+7) 
