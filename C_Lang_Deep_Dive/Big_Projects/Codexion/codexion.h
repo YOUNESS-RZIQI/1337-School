@@ -106,6 +106,8 @@ void		coder_work(t_coder *coder, t_simulation *sim);
 /* simulation_utils.c */
 void		safe_print(t_simulation *sim, int id, const char *msg);
 void		sleep_action(t_simulation *sim, long long ms_time);
+void		apply_fairness_wait(t_simulation *sim);
+void		wait_barrier(t_simulation *sim, t_coder *coder);
 
 /* monitor.c */
 void		*run_monitor(void *arg);

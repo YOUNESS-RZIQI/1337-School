@@ -43,3 +43,33 @@ void	sleep_action(t_simulation *sim, long long ms_time)
 			usleep(500);
 	}
 }
+
+void	apply_fairness_wait(t_simulation *sim)
+{
+	long long	wait_time;
+
+	wait_time = sim->args.time_to_compile
+		- (sim->args.time_to_debug + sim->args.time_to_refactor);
+	if (sim->args.number_of_coders % 2 != 0)
+		wait_time += sim->args.time_to_compile;
+	if (wait_time > 0)
+		sleep_action(sim, wait_time);
+}
+
+void	wait_barrier(t_simulation *sim, t_coder *coder)
+{
+	pthread_mutex_lock(&sim->sim_mutex);
+	sim->threads_at_barrier++;
+	if (sim->threads_at_barrier == sim->args.number_of_coders)
+	{
+		sim->start_time = get_current_time_ms();
+		pthread_cond_broadcast(&sim->cond_lock);
+	}
+	else
+	{
+		while (sim->threads_at_barrier < sim->args.number_of_coders)
+			pthread_cond_wait(&sim->cond_lock, &sim->sim_mutex);
+	}
+	coder->time_since_last_compile = sim->start_time;
+	pthread_mutex_unlock(&sim->sim_mutex);
+}
