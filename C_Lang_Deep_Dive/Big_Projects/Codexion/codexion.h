@@ -120,4 +120,10 @@ short		initialize_all_mutexes(t_simulation *sim);
 void		init_dongles(t_simulation *sim);
 void		init_coders(t_simulation *sim);
 
+/* error_message.c */
+short		null_error_message(void);
+short		input_error_message(void);
+short		initialize_simulation_error_message(void);
+short		mutex_error_message(void);
+
 #endif

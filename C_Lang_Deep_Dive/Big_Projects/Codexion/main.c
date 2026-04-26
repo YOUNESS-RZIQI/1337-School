@@ -90,11 +90,11 @@ int	main(int argc, char **argv)
 	sim.args = convert_args(argc, argv);
 	th = NULL;
 	if (is_empty_args(sim.args))
-		return (1);
+		return (input_error_message());
 	if (initialize_simulation(&sim, &th) != 0)
 	{
 		cleanup_sim(&sim, th, 0);
-		return (1);
+		return (initialize_simulation_error_message());
 	}
 	if (initialize_all_mutexes(&sim) == 0)
 	{
@@ -102,7 +102,10 @@ int	main(int argc, char **argv)
 		cleanup_sim(&sim, th, 1);
 	}
 	else
+	{
 		cleanup_sim(&sim, th, 0);
+		return (mutex_error_message());
+	}
 	return (0);
 }
 

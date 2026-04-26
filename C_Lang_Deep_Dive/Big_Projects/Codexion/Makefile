@@ -12,7 +12,8 @@ SRCS = main.c \
        init.c \
        utils_2.c \
        simulation_utils.c \
-       dongle_utils.c
+       dongle_utils.c \
+       error_message.c
 
 OBJS = $(SRCS:.c=.o)
 

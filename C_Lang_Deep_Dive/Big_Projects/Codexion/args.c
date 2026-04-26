@@ -75,7 +75,6 @@ t_args	convert_args(int argc, char **argv)
 	args = empty_args();
 	if (argc == 9)
 		args = args_converted(argv);
-	if (args.number_of_coders <= 1)
-		args = empty_args();
+
 	return (args);
 }
