@@ -75,6 +75,6 @@ t_args	convert_args(int argc, char **argv)
 	args = empty_args();
 	if (argc == 9)
 		args = args_converted(argv);
-
+ 
 	return (args);
 }
