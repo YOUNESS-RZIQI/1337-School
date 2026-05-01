@@ -1,3 +1,6 @@
 [submodule "C_Lang_Deep__Dive"]
 	path = C_Lang_Deep__Dive
 	url = git@github.com:YOUNESS-RZIQI/C_Lang_Deep__Dive.git
+[submodule "HTML_Deep__Dive"]
+	path = HTML_Deep__Dive
+	url = git@github.com:YOUNESS-RZIQI/HTML_Deep__Dive.git
