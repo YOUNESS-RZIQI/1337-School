@@ -4,3 +4,6 @@
 [submodule "HTML_Deep__Dive"]
 	path = HTML_Deep__Dive
 	url = git@github.com:YOUNESS-RZIQI/HTML_Deep__Dive.git
+[submodule "Python_Deep__Dive"]
+	path = Python_Deep__Dive
+	url = git@github.com:YOUNESS-RZIQI/Python_Deep__Dive.git
