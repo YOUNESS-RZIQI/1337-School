@@ -10,3 +10,6 @@
 [submodule "Amazing"]
 	path = Amazing
 	url = https://github.com/YOUNESS-RZIQI/Amazing
+[submodule "Python_Modules"]
+	path = Python_Modules
+	url = https://github.com/YOUNESS-RZIQI/Python_Modules
