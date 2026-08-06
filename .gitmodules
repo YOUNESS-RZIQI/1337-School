@@ -19,3 +19,6 @@
 [submodule "Codexion_Codexion"]
 	path = Codexion_Codexion
 	url = https://github.com/YOUNESS-RZIQI/Codexion_Codexion
+[submodule "Drones-Fly-in"]
+	path = Drones-Fly-in
+	url = https://github.com/YOUNESS-RZIQI/Drones-Fly-in
