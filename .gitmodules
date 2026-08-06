@@ -13,3 +13,6 @@
 [submodule "Python_Modules"]
 	path = Python_Modules
 	url = https://github.com/YOUNESS-RZIQI/Python_Modules
+[submodule "Call-Me-Maybe"]
+	path = Call-Me-Maybe
+	url = https://github.com/YOUNESS-RZIQI/Call-Me-Maybe
