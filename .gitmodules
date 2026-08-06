@@ -22,3 +22,6 @@
 [submodule "Drones-Fly-in"]
 	path = Drones-Fly-in
 	url = https://github.com/YOUNESS-RZIQI/Drones-Fly-in
+[submodule "C_Lang_Deep_Dive"]
+	path = C_Lang_Deep_Dive
+	url = https://github.com/YOUNESS-RZIQI/C_Lang_Deep_Dive
